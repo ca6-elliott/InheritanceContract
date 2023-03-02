@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Inheritance {
+    address payable public owner;
+    bool deceased;
+    uint public creationTime;
+    uint public lastUpdateTime;
+
+    mapping(address => uint) inheritance;
+
+    constructor() {
+        owner = payable(msg.sender);
+        creationTime = block.timestamp;
+        lastUpdateTime = block.timestamp;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner, "Only the owner can call this function.");
+        _;
+    }
+
+    modifier onlyAfterDeath {
+        require(deceased == true, "The owner is not deceased.");
+        _;
+    }
+
+    function setInheritance(address heir, uint amount) public onlyOwner {
+        require(heir != address(0), "Invalid heir address.");
+        require(amount > 0, "Invalid inheritance amount.");
+        require(address(this).balance >= amount, "Insufficient balance.");
+        inheritance[heir] = amount;
+        lastUpdateTime = block.timestamp;
+    }
+
+    function withdraw() public onlyAfterDeath {
+        uint amount = inheritance[msg.sender];
+        require(amount > 0, "You do not have any inheritance.");
+        inheritance[msg.sender] = 0;
+        payable(msg.sender).transfer(amount);
+    }
+
+    function declareDeath() public onlyOwner {
+        deceased = true;
+        lastUpdateTime = block.timestamp;
+    }
+
+    function getInheritance(address heir) public view returns (uint) {
+        return inheritance[heir];
+    }
+
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+}
