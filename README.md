@@ -1,18 +1,36 @@
-# InheritanceContract
+## Inheritance Contract
 
-Inheritance Smart Contract
+This Solidity contract enables the management of inheritance by allowing the owner to designate heirs and distribute funds to them after the owner's death.
 
-This Solidity smart contract provides a simple way to manage inheritance on the Ethereum network. With this contract, users can easily define beneficiaries and distribute their assets in the event of their passing. The contract automatically transfers assets to the designated beneficiaries based on the instructions provided by the user.
+### Contract Structure
 
-Features:
-- Simple and secure inheritance management on the Ethereum network
-- Easy setup and customization of beneficiaries and asset distribution
-- Built-in validation and error handling for added security
-- Integration with existing Ethereum wallets and applications
-- Open source and fully auditable code for transparency and trustworthiness
+The contract consists of a single `Inheritance` contract defined in Solidity version 0.8.0 or higher.
 
-To use this contract, simply deploy it to the Ethereum network and interact with it using a web3-enabled application or the Ethereum command line interface. Full documentation and example code is provided in the "docs" directory of this repository.
+### State Variables
 
-Contributions and feedback are welcome! If you find any bugs or issues with the contract, please open an issue or submit a pull request.```
+- `owner`: An `address` variable representing the owner of the inheritance contract. This address is payable, allowing funds to be transferred to it.
+- `deceased`: A boolean variable indicating whether the owner has passed away.
+- `creationTime`: A `uint` variable storing the timestamp when the contract was created.
+- `lastUpdateTime`: A `uint` variable storing the timestamp of the last contract update.
+- `inheritance`: A mapping that associates addresses (heirs) with the amount of inheritance they are entitled to receive.
 
-This description provides an overview of the purpose and features of the smart contract, as well as instructions for deployment and usage. You may want to customize it to fit your specific contract and use case.
+### Functions
+
+The contract provides the following functions to manage inheritance:
+
+1. `setInheritance(address heir, uint amount)`: Allows the owner to set the inheritance amount for a specific heir. This function can only be called by the owner and requires a non-zero amount of inheritance.
+2. `withdraw()`: Enables heirs to withdraw their designated inheritance after the owner's death. Only heirs can invoke this function, and it transfers the designated amount to their address.
+3. `declareDeath()`: Allows the owner to declare their own death, marking the `deceased` variable as true. This function can only be called by the owner.
+4. `getInheritance(address heir)`: Retrieves the inheritance amount designated for a specific heir. It takes the address of the heir as input and returns the corresponding inheritance amount.
+5. `getBalance()`: Returns the current balance of the inheritance contract.
+
+### Modifiers
+
+The contract includes the following modifiers:
+
+1. `onlyOwner`: Restricts the execution of a function to the contract's owner. It throws an error message if called by an address other than the owner.
+2. `onlyAfterDeath`: Restricts the execution of a function to after the owner's death. It throws an error message if the owner is not declared deceased.
+
+### License
+
+The contract is licensed under the MIT License. Please refer to the SPDX-License-Identifier at the top of the code for more details.
